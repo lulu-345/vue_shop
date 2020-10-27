@@ -4,6 +4,10 @@ import VueRouter from 'vue-router'
 import Login from './components/Login.vue'
 // 导入后台管理页面Home路由子组件
 import Home from './components/Home.vue'
+// 导入Hoem组件的Welcome子组件
+import Welcome from './components/Welcome.vue'
+// 导入User子组件
+import Users from './components/user/Users.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -12,7 +16,17 @@ const routes = [
   // 当用户访问/的时候直接就重定向到登录路由子组件
   { path: '/', redirect: '/login' },
   // 配置后台管理Home子组件的路由规则
-  { path: '/home', component: Home }
+  {
+    path: '/home',
+    component: Home,
+    // 访问/home 的时候重定向到/welcome
+    redirect: '/welcome',
+    children:
+      [
+        { path: '/welcome', component: Welcome },
+        { path: '/users', component: Users }
+      ]
+  }
 ]
 
 const router = new VueRouter({
