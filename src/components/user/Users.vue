@@ -72,6 +72,7 @@
               placement="top"
             >
               <el-button
+                @click="setRoleShowDialog(scope.row)"
                 type="warning"
                 icon="el-icon-setting"
                 size="mini"
@@ -157,6 +158,32 @@
           <el-button type="primary" @click="editUserInfo">确 定</el-button>
         </span>
       </el-dialog>
+      <!-- 分配角色的对话框 -->
+      <el-dialog
+        title="分配角色"
+        :visible.sync="setRoleDialogVisible"
+        width="50%"
+      >
+        <p>当前的用户：{{ userInfo.username }}</p>
+        <p>当前的角色：{{ userInfo.role_name }}</p>
+        <p>
+          分配新角色：
+          <el-select v-model="currentId" placeholder="请选择">
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </p>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="setRole">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -211,7 +238,14 @@ export default {
         email: '',
         mobile: ''
       },
-
+      // 控制分配角色对话框的显示与隐藏
+      setRoleDialogVisible: false,
+      // 点击分配角色的那个用户信息
+      userInfo: {},
+      // 所有的角色数据列表
+      rolesList: [],
+      // 用户在分配角色对话框中选择的那个最新的角色的id
+      currentId: '',
       // 添加表单的规则对象
       addFormRules: {
         username: [
@@ -265,6 +299,7 @@ export default {
     }
   },
   methods: {
+    // 获取用户列表数据的函数
     async getUsersList() {
       const { data: res } = await this.$http.get('users', {
         params: this.queryInfo
@@ -405,6 +440,42 @@ export default {
       this.$message.success('删除用户成功')
       // 重新刷新用户列表
       this.getUsersList()
+    },
+    // 当点击了分配角色按钮的时候
+    async setRoleShowDialog(role) {
+      // 显示出来对话框
+      this.setRoleDialogVisible = true
+      // 把当前的用户信息保存在私有数据中
+      this.userInfo = role
+      // 发送请求获取到所有的角色列表信息
+      const { data: res } = await this.$http.get('roles')
+      // 请求发送失败
+      if (res.meta.status !== 200) {
+        this.$message.error('获取角色列表失败')
+      }
+      // 请求发送成功 把角色列表信息保存在私有数据中
+      this.rolesList = res.data
+    },
+    // 当用户点击了分配角色对话框的确定按钮的时候
+    async setRole() {
+      // 发送请求
+      const { data: res } = await this.$http.put(
+        `users/${this.userInfo.id}/role`,
+        {
+          rid: this.currentId
+        }
+      )
+      // 请求发送失败
+      if (res.meta.status !== 200) {
+        return this.$message.error('分配角色失败')
+      }
+      // 请求发送成功
+      // 重新刷新用户列表数据
+      this.getUsersList()
+      // 清空这个用户的信息
+      this.userInfo = {}
+      // 关闭对话框
+      this.setRoleDialogVisible = false
     }
   }
 }
