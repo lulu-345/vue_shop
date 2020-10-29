@@ -6,6 +6,8 @@ import './plugins/element.js'
 import './assets/css/global.css'
 // 导入字体图标库样式文件
 import './assets/fonts/iconfont.css'
+// 导入可以实现将数据渲染成树形表格的运行依赖
+import TreeTable from 'vue-table-with-tree-grid'
 
 // 导入axios
 import axios from 'axios'
@@ -19,6 +21,8 @@ axios.interceptors.request.use(config => {
 })
 // 把axios放在Vue的原型上
 Vue.prototype.$http = axios
+// 把TreeTable这个组件注册为Vue全局组件
+Vue.component('tree-table', TreeTable)
 
 Vue.config.productionTip = false
 
