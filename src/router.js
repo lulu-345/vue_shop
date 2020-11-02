@@ -20,6 +20,8 @@ import Params from './components/goods/Params.vue'
 import GoodsList from './components/goods/List.vue'
 // 导入添加商品的单文件组件
 import GoodsAdd from './components/goods/Add.vue'
+// 导入订单列表的单文件组件
+import Order from './components/order/Order.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -42,7 +44,8 @@ const routes = [
         { path: '/categories', component: Cate },
         { path: '/params', component: Params },
         { path: '/goods', component: GoodsList },
-        { path: '/goods/add', component: GoodsAdd }
+        { path: '/goods/add', component: GoodsAdd },
+        { path: '/orders', component: Order }
       ]
   }
 ]
