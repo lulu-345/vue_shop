@@ -1,4 +1,6 @@
 module.exports = {
+  // 设置路径
+  publicPath: process.env.NODE_ENV === 'production' ? '/vue_shop/' : '/',
   chainWebpack: config => {
     // 如果是开发模式的情况下设置打包的入口文件为src目录下面的main-dev.js
     config.when(process.env.NODE_ENV === 'development', config => {
